@@ -9,14 +9,17 @@ const playBlackJack = (function() {
   const cardOptions = ['A',2,3,4,5,6,7,8,9,10,'J','Q','K'];
 
   //declare display variable which will be updated with our cards array
-  let display = document.getElementById('cards');
+  let gameResult = document.querySelector('.game-result');
+  let figure = document.querySelector('figure');
 
   //create empty array of player's cards which will hold all of our cards throughout the game
   let playerCards = [];
 
-
-
   //create random card creator to cut-down on repeated code
+  function delayedReload() {
+    setTimeout(location.reload.bind(location), 1500);
+  }
+
   function randomCard() {
      let randomCard = Math.floor(Math.random() * cardOptions.length);
      return randomCard;
@@ -24,7 +27,18 @@ const playBlackJack = (function() {
 
   function check21() {
     if (newTotal === 21) {
-      alert('you win!');
+      gameResult.innerHTML = "You have " + " " + newTotal + ". " + " You win!"
+      delayedReload();
+    }
+  }
+
+  function displayIndCard() {
+    figure.innerHTML = " ";
+    for (let i =0; i<playerCards.length; i++){
+      let newElement = document.createElement('div');
+      newElement.className = "card";
+      newElement.innerHTML = playerCards[i];
+      figure.prepend(newElement);
     }
   }
 
@@ -36,9 +50,9 @@ const playBlackJack = (function() {
     playerCards.push(card); //push new card to array
     card = cardOptions[randomCard()]; //make sure it creates random # and gets array index value
     playerCards.push(card); //push new card to array
-    display.innerHTML = playerCards; //make our player's array of cards visible
-    console.log(playerCards);
 
+    console.log(playerCards);
+    displayIndCard();
     cardValueTotal();
     check21();
 
@@ -50,18 +64,17 @@ const playBlackJack = (function() {
   function cardValueTotal() {
 
     let cardValueSum = 0;
-    for (let i=0; i<playerCards.length; i++) {
-        if (playerCards[i] === "J", playerCards[i] === "Q", playerCards[i] === "K"){
-          cardValueSum += 10;
-        } else if (playerCards[i] === "A") {
-          cardValueSum += 11;
+    for (let i = 0; i < playerCards.length; i++) {
+        if ((playerCards[i] === 'J') || (playerCards[i] === 'Q')  || (playerCards[i] === 'K')){
+          cardValueSum = cardValueSum + 10;
+        } else if (playerCards[i] === 'A') {
+          cardValueSum = cardValueSum + 11;
         } else {
           cardValueSum += playerCards[i];
         }
       };
-
-    console.log(cardValueSum);
     newTotal = cardValueSum;
+    console.log(newTotal);
   }
 
 
@@ -69,15 +82,18 @@ const playBlackJack = (function() {
 
   function hit() {
       //add 1 randomcard to playerCards array
-      card = cardOptions[randomCard()]; //make sure it creates random # and gets array index value
-      playerCards.push(card); //push new card to array
-      display.innerHTML = playerCards; //make our player's array of cards visible
+      let newCard = cardOptions[randomCard()]; //make sure it creates random # and gets array index value
+      playerCards.push(newCard); //push new card to array
+
+      displayIndCard();
       cardValueTotal();
 
       if (newTotal === 21) {
-        alert('you win');
+        gameResult.innerHTML = "You have " + " " + newTotal + ". " + " You win!"
+        delayedReload();
       } else if (newTotal > 21) {
-        alert('you bust');
+        gameResult.innerHTML = "You have " + " " + newTotal + ". " + " You bust!"
+        delayedReload();
       }
 
 
@@ -86,13 +102,17 @@ const playBlackJack = (function() {
   function stand() {
       cardValueTotal();
       if (newTotal < 16) {
-          alert('Dealer wins.');
+          gameResult.innerHTML = "You have " + " " + newTotal + ". " + " Dealer wins."
+          delayedReload();
       } else if (newTotal < 19) {
-          alert('Push!');
+          gameResult.innerHTML = "You have " + " " + newTotal + ". " + " Game is a push."
+          delayedReload();
       } else if (newTotal > 21) {
-          alert('You Bust.');
+          gameResult.innerHTML = "You have " + " " + newTotal + ". " + " You bust!"
+          delayedReload();
       } else if (newTotal > 18 || newTotal < 22) {
-          alert('You win!');
+          gameResult.innerHTML = "You have " + " " + newTotal + ". " + " You win!"
+          delayedReload();
       }
     }
 
